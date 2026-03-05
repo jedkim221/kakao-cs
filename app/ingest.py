@@ -1,10 +1,11 @@
 import os
+from pathlib import Path
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
 from langchain_community.vectorstores import Chroma
 
-CHROMA_PATH = "chroma_db"
+CHROMA_PATH = str(Path(__file__).parent.parent / "chroma_db")
 EMBED_MODEL = "nomic-embed-text"
 
 

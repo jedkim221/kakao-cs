@@ -59,7 +59,7 @@ def create_agent(user_key: str) -> AgentExecutor:
     @tool
     def get_my_orders_authed(dummy: str = "") -> str:
         """고객이 특정 주문번호 없이 최근 주문 목록 전체를 보고 싶을 때 사용합니다."""
-        return get_my_orders.invoke(user_key)
+        return get_my_orders.invoke({"user_key": user_key})
 
     authed_tools = [search_faq, get_order_status_authed, get_my_orders_authed]
 
