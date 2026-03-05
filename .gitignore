@@ -1,6 +1,15 @@
 .venv/
 __pycache__/
 *.pyc
+*.pyo
 chroma_db/
 .env
 *.db
+.DS_Store
+.pytest_cache/
+*.log
+*.egg-info/
+dist/
+build/
+.coverage
+htmlcov/

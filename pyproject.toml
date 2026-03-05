@@ -1,0 +1,6 @@
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[project]
+name = "kakao-cs-chatbot"
+requires-python = ">=3.11"
