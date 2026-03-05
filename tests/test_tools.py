@@ -23,3 +23,14 @@ def test_get_order_status_not_found():
         "user_key": "kakao_user_1"
     })
     assert "찾을 수 없" in result
+
+
+def test_get_my_orders_returns_list():
+    result = get_my_orders.invoke("kakao_user_1")
+    assert isinstance(result, str)
+    assert "ORD-" in result
+
+
+def test_get_my_orders_empty():
+    result = get_my_orders.invoke("unknown_user_999")
+    assert "없습니다" in result
