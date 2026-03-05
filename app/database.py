@@ -1,7 +1,10 @@
 import sqlite3
+from pathlib import Path
 from typing import Optional
 
-DB_PATH = "orders.db"
+DB_PATH = str(Path(__file__).parent.parent / "orders.db")
+MAX_ORDERS_PER_QUERY = 5
+
 _memory_conn = None
 
 
@@ -20,7 +23,6 @@ def get_conn(db_path: str = DB_PATH):
 def init_db(db_path: str = DB_PATH):
     global _memory_conn
     if db_path == ":memory:":
-        # Reset in-memory DB for each test
         _memory_conn = sqlite3.connect(":memory:", check_same_thread=False)
         _memory_conn.row_factory = sqlite3.Row
     conn = get_conn(db_path)
@@ -52,17 +54,25 @@ def seed_sample_orders(db_path: str = DB_PATH):
 
 def get_order(order_id: str, user_key: str, db_path: str = DB_PATH) -> Optional[dict]:
     conn = get_conn(db_path)
-    row = conn.execute(
-        "SELECT * FROM orders WHERE id = ? AND user_key = ?",
-        (order_id, user_key),
-    ).fetchone()
-    return dict(row) if row else None
+    try:
+        row = conn.execute(
+            "SELECT * FROM orders WHERE id = ? AND user_key = ?",
+            (order_id, user_key),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        if db_path != ":memory:":
+            conn.close()
 
 
 def get_orders_by_user(user_key: str, db_path: str = DB_PATH) -> list[dict]:
     conn = get_conn(db_path)
-    rows = conn.execute(
-        "SELECT * FROM orders WHERE user_key = ? ORDER BY created_at DESC LIMIT 5",
-        (user_key,),
-    ).fetchall()
-    return [dict(r) for r in rows]
+    try:
+        rows = conn.execute(
+            "SELECT * FROM orders WHERE user_key = ? ORDER BY created_at DESC LIMIT ?",
+            (user_key, MAX_ORDERS_PER_QUERY),
+        ).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        if db_path != ":memory:":
+            conn.close()
