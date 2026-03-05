@@ -2,6 +2,13 @@ import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
 from app.main import app
+import app.main as main_module
+
+@pytest.fixture(autouse=True)
+def clear_agent_cache():
+    main_module._agent_cache.clear()
+    yield
+    main_module._agent_cache.clear()
 
 client = TestClient(app)
 
