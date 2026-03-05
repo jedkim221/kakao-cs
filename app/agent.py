@@ -1,3 +1,4 @@
+import os
 import re
 from langchain_ollama import ChatOllama
 from langchain.agents import AgentExecutor, create_react_agent
@@ -40,7 +41,7 @@ def _extract_order_id(raw: str) -> str:
     if m:
         return m.group(1)
     # key = value 형태에서 value 추출
-    m = re.search(r'=\s*["\']?([^"\'\\s]+)["\']?', raw)
+    m = re.search(r"=\s*[\"']?([^\"'\s]+)[\"']?", raw)
     if m:
         return m.group(1).strip().strip('"\'')
     return raw.strip().strip('"\'')
@@ -70,7 +71,7 @@ def create_agent(user_key: str) -> AgentExecutor:
         agent=agent,
         tools=authed_tools,
         memory=memory,
-        verbose=True,
+        verbose=os.getenv("DEBUG", "").lower() in ("1", "true"),
         handle_parsing_errors=True,
         max_iterations=5,
     )
