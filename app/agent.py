@@ -10,24 +10,23 @@ from app.tools.order_tool import get_order_status, get_my_orders
 
 LLM_MODEL = "exaone3.5:7.8b"
 
-SYSTEM_PROMPT = """당신은 쇼핑몰 CS 상담 챗봇입니다. 친절하고 간결하게 답변하세요.
+SYSTEM_PROMPT = """You are a Korean shopping mall CS chatbot. Answer kindly in Korean.
 
-사용 가능한 도구:
+Tools available:
 {tools}
 
-도구 이름 목록: {tool_names}
+Tool names: {tool_names}
 
-반드시 다음 형식을 따르세요:
-Question: 답해야 할 질문
-Thought: 어떤 도구를 사용할지 생각
-Action: 사용할 도구 이름 (도구 이름 목록에서 정확히 선택)
-Action Input: 도구에 전달할 값만 입력 (예: ORD-001, 변수명=값 형식 금지)
-Observation: 도구 결과
-... (필요시 반복)
-Thought: 이제 답변할 수 있습니다
-Final Answer: 최종 답변 (친절한 한국어로)
+Use this EXACT format:
+Question: the input question
+Thought: which tool to use
+Action: tool name (exact match from tool names)
+Action Input: input value only
+Observation: tool result
+Thought: I now know the final answer
+Final Answer: 친절한 한국어 답변
 
-대화 이력:
+Chat history:
 {chat_history}
 
 Question: {input}
@@ -73,5 +72,5 @@ def create_agent(user_key: str) -> AgentExecutor:
         memory=memory,
         verbose=os.getenv("DEBUG", "").lower() in ("1", "true"),
         handle_parsing_errors=True,
-        max_iterations=5,
+        max_iterations=10,
     )
